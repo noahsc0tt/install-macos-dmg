@@ -2,6 +2,10 @@
 
 Install .dmg application images from the command line
 
+## Requirements
+
+- bash 4.0+
+
 ## Installation
 
 This is just a bash script, so:

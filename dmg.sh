@@ -12,8 +12,8 @@ if [[ ! -f $path || ${path,,} != *.dmg ]]; then
 fi
 
 dmg=$(basename "$path")
-appname="${dmg:0:-4}"
 volume="/Volumes/$appname"
+appname="${dmg%.dmg}"
 
 echo "Mounting disk image"
 if ! err=$(hdiutil attach "$path" 2>&1 > /dev/null); then
