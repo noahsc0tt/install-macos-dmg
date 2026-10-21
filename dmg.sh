@@ -18,18 +18,17 @@ echo "Mounting disk image"
 errfile=$(mktemp)
 trap 'rm "$errfile"' EXIT
 
-volume=$(hdiutil attach "$path" 2>"$errfile" | awk '$3 ~ /\/Volumes\/.*/ { print $3 }')
-
-if [[ -s $errfile ]]; then
-    error < "$<($errfile)"
+if ! attach_output=$(hdiutil attach "$path" 2>"$errfile"); then
+    if [[ -s $errfile ]]; then
+        error "$(<"$errfile")"
+    fi
+    error "hdiutil attach failed"
 fi
 
-if [[ ! -e $volume ]]; then
-    for file in /Volumes/*; do
-        if [[ $file == $volume* ]]; then
-            volume="$file"
-        fi
-    done
+volume=$(awk 'match($0, /\/Volumes\/.*/) { print substr($0, RSTART, RLENGTH); exit }' <<<"$attach_output")
+
+if [[ ! -d $volume ]]; then
+    error "Could not determine mounted volume path"
 fi
 
 appname="${volume#/Volumes/}"
