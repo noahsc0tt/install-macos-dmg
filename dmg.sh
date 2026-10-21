@@ -31,13 +31,17 @@ if [[ ! -d $volume ]]; then
     error "Could not determine mounted volume path"
 fi
 
-appname="${volume#/Volumes/}"
+for file in "$volume"/*.app; do
+    [[ -d $file ]] && app="$file"
+done
+
+[[ -z $app ]] && error "No app found in $volume"
 
 
 
 echo "Copying app to Applications directory"
 
-if ! err=$(ditto "$volume/$appname.app" "/Applications/$appname.app" 2>&1 > /dev/null) ; then
+if ! err=$(ditto "$app" "/Applications/${app##*/}" 2>&1 > /dev/null) ; then
     error "$err"
 fi
 
