@@ -24,7 +24,7 @@ This is just a bash script, so:
 
 3. Put it somewhere on your path
     ```sh
-    cp dmg.sh /usr/local/bin/dmg
+    sudo cp dmg.sh /usr/local/bin/dmg
     ```
     The filename should be the command you would like to invoke the tool with
 
