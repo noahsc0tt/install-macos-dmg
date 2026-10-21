@@ -18,13 +18,21 @@ echo "Mounting disk image"
 errfile=$(mktemp)
 trap 'rm "$errfile"' EXIT
 
-volume=$(hdiutil attach "$path" 2>"$errfile" | awk '$NF ~ /\/Volumes\/.*/ { print $NF }')
+volume=$(hdiutil attach "$path" 2>"$errfile" | awk '$3 ~ /\/Volumes\/.*/ { print $3 }')
 
 if [[ -s $errfile ]]; then
     error < "$<($errfile)"
 fi
 
-appname="${volume##/Volumes/}"
+if [[ ! -e $volume ]]; then
+    for file in /Volumes/*; do
+        if [[ $file == $volume* ]]; then
+            volume="$file"
+        fi
+    done
+fi
+
+appname="${volume#/Volumes/}"
 
 
 
